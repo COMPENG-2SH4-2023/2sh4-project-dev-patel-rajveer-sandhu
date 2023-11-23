@@ -5,7 +5,9 @@ Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
-    playerPos.setObjPos(10,5,'*');
+    
+    playerPos.setObjPos(mainGameMechsRef->getBoardSizeX() / 2, 
+                                mainGameMechsRef->getBoardSizeY() / 2,'*');
 
     // more actions to be included
 }
@@ -23,10 +25,22 @@ void Player::getPlayerPos(objPos &returnPos)
 
 void Player::updatePlayerDir()
 {
+    char input;
+    input = mainGameMechsRef->getInput();
+
+    if(input == ' ')
+    {
+        mainGameMechsRef->setExitTrue();
+    }
+
     // PPA3 input processing logic 
-    if (mainGameMechsRef->getInput() != 0){
-        char input;
-        input = mainGameMechsRef->getInput();
+    else if (input != 0){
+        //if input is capital letter, set to lowercase
+        if(input >= 'A' && input <= 'Z')
+        {
+            input += 32;
+        }
+
         switch(myDir){
             case STOP:
                 if (input == 'w'){
@@ -81,34 +95,41 @@ void Player::updatePlayerDir()
             default:
                 break;
             }
-            input = 0;
         }
+    input = 0;
+    //clear the most recent input (input = NULL)
+    mainGameMechsRef->clearInput();
 }     
 
 void Player::movePlayer()
 {
     // PPA3 Finite State Machine logic
+    //BLUD loves HARD Coding lmao
+
+    int boardX = mainGameMechsRef->getBoardSizeX();
+    int boardY = mainGameMechsRef->getBoardSizeY();
+
     if (myDir == UP){
         playerPos.y--;
-        if (playerPos.y == 0){
-            playerPos.y = 9;
+        if (playerPos.y <= 0){
+            playerPos.y = boardY - 2;
         }
     }
     else if (myDir == DOWN){
         playerPos.y++;
-        if (playerPos.y == 10){
+        if (playerPos.y >= boardY - 1){
             playerPos.y = 1;
         }
     }
     else if (myDir == LEFT){
         playerPos.x--;
-        if (playerPos.x == 0){
-            playerPos.x = 19;
+        if (playerPos.x <= 0){
+            playerPos.x = boardX - 2;
         }
     }
     else if (myDir == RIGHT){
         playerPos.x++;
-        if (playerPos.x == 20){
+        if (playerPos.x >= boardX - 1){
             playerPos.x = 1;
         }
     }

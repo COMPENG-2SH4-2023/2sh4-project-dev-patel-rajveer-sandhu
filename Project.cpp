@@ -7,11 +7,11 @@
 using namespace std;
 
 #define DELAY_CONST 100000
-GameMechs *gamemech = new GameMechs(); 
-Player *player1 = new Player(gamemech);
+
+GameMechs *gamemech; //= new GameMechs(); 
+Player *player1; // = new Player(gamemech);
 objPos playerpos; 
 
-bool exitFlag;
 
 void Initialize(void);
 void GetInput(void);
@@ -27,9 +27,10 @@ int main(void)
 
     Initialize();
 
-    while(exitFlag == false)  
+    while(gamemech->getExitFlagStatus() == false)  
     {
-        GetInput();
+        //GET INPUT NOT NEEDED ANYMORE I THINK
+        //GetInput();
         RunLogic();
         DrawScreen();
         LoopDelay();
@@ -45,14 +46,20 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    exitFlag = false;
+    //recommended default board size is 30 x 15
+    gamemech = new GameMechs(26, 13);
+    player1 = new Player(gamemech);
+
 }
 
 void GetInput(void)
 {
+    //NO NEED FOR THIS AS UPDATE PLAYER DIRECTION CHECKS THIS
+    /*
    if (MacUILib_hasChar()){
     gamemech->getInput();
    }
+   */
 }
 
 void RunLogic(void)
@@ -65,21 +72,56 @@ void RunLogic(void)
 void DrawScreen(void)
 {
     MacUILib_clearScreen();
-    player1->getPlayerPos(playerpos); 
-    for(int i=0; i<=9;i++){
-        for(int j=0;j<=19;j++){
-            if (i == 0 || i == 9 || j == 0 || j==19){
+
+    if(gamemech->getExitFlagStatus())
+    {
+        if(gamemech->getLoseFlagStatus())
+        {
+            MacUILib_printf("Lost innit\n");
+        }
+        else
+        {
+            MacUILib_printf("GAME EXITED\n");
+        }
+        
+        return;
+    }
+
+    //iteration 1B
+    objPos tempPos;
+    player1->getPlayerPos(tempPos);
+
+    for(int i = 0; i < gamemech->getBoardSizeY(); i++)
+    {
+        for(int j = 0; j < gamemech->getBoardSizeX(); j++)
+        {
+            if(j == tempPos.x && i == tempPos.y)
+            {
+                MacUILib_printf("%c", tempPos.symbol);
+            }
+            else if(i == 0 || i == gamemech->getBoardSizeY() - 1 || j == 0 || j == gamemech->getBoardSizeX() - 1)
+            {
                 MacUILib_printf("#");
             }
-            else if (i==playerpos.y && j==playerpos.x){
-                MacUILib_printf("@");
-            }
-            else{
+            else
+            {
                 MacUILib_printf(" ");
             }
         }
         MacUILib_printf("\n");
     }   
+
+    
+    //BELOW IS FOR DEBUGGING OF GAMEMECH DATA MEMBERS
+    MacUILib_printf("BoardSize: %dx%d, Player Pos: <%d, %d> + %c\n", 
+                                gamemech->getBoardSizeX(), 
+                                gamemech->getBoardSizeY(),
+                                tempPos.x, tempPos.y, tempPos.symbol);
+
+
+    MacUILib_printf("Score: %d .... Lose Flag: %d\n", 
+                                gamemech->getScore(), 
+                                gamemech->getLoseFlagStatus());
 
 }
 
@@ -91,7 +133,9 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    MacUILib_clearScreen();    
   
     MacUILib_uninit();
+
+    delete player1;
+    delete gamemech;
 }
