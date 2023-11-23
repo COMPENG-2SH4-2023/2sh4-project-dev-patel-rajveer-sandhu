@@ -3,7 +3,7 @@
 
 GameMechs::GameMechs()
 {
-
+    
 }
 
 GameMechs::GameMechs(int boardX, int boardY)
@@ -25,6 +25,7 @@ char GameMechs::getInput()
     if (MacUILib_hasChar() != 0){
         input = MacUILib_getChar();
     }
+    return (input);
 }
 
 int GameMechs::getBoardSizeX()

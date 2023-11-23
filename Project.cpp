@@ -50,7 +50,7 @@ void Initialize(void)
 
 void GetInput(void)
 {
-   if (MacUILib_hasChar() != 0){
+   if (MacUILib_hasChar()){
     gamemech->getInput();
    }
 }

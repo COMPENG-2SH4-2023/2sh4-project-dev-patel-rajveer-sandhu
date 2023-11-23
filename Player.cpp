@@ -27,7 +27,7 @@ void Player::updatePlayerDir()
     if (mainGameMechsRef->getInput() != 0){
         char input;
         input = mainGameMechsRef->getInput();
-        switch(input){
+        switch(myDir){
             case STOP:
                 if (input == 'w'){
                     myDir = UP;
