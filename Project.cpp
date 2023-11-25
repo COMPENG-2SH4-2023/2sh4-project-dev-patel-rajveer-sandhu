@@ -3,14 +3,15 @@
 #include "objPos.h"
 #include "Player.h"
 #include "GameMechs.h"
+#include "objPosArrayList.h"
 
 using namespace std;
 
 #define DELAY_CONST 100000
 
-GameMechs *gamemech; //= new GameMechs(); 
-Player *player1; // = new Player(gamemech);
-objPos playerpos; 
+GameMechs *gamemech;
+Player *player1;
+
 
 
 void Initialize(void);
