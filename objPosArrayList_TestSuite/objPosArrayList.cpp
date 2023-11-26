@@ -22,10 +22,12 @@ int objPosArrayList::getSize()
 
 void objPosArrayList::insertHead(objPos thisPos)
 {
-    if (sizeList == sizeArray){
+    //ensure list size never exceeds capacity of array
+    if (sizeList >= sizeArray){
         return;
     }
     for (int i = sizeList; i>0;i--){
+        //shuffle towards the tail
         aList[i].setObjPos(aList[i-1]);
     }
     aList[0].setObjPos(thisPos);

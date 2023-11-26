@@ -9,9 +9,6 @@
 
 using namespace std;
 
-//BOARD SIZE DEFINITION PUT SOMEWHERE
-
-
 class GameMechs
 {
     // Construct the remaining declaration from the project manual.
