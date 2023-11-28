@@ -16,7 +16,7 @@ Food::~Food()
 
 }
 
-void Food::generateFood(objPosArrayList* blockOff)
+void Food::generateFood(objPosArrayList &blockOff)
 {
     //generate random x and y coordinate and make sure 
     //not border position or player (blockOff) position 
@@ -32,8 +32,9 @@ void Food::generateFood(objPosArrayList* blockOff)
     //same position as player object
     while(!foodGeneratedFlag)
     {
+        
         foodGeneratedFlag = true;
-
+        
         while(candidateX == 0)
         {
             candidateX = rand() % xRange;
@@ -46,12 +47,15 @@ void Food::generateFood(objPosArrayList* blockOff)
 
         foodPos.setObjPos(candidateX, candidateY, 'O');
 
-        for(int i = 0; i < blockOff->getSize(); i++)
+        for(int i = 0; i < blockOff.getSize(); i++)
         {
-            blockOff->getElement(bodySeg, i);
+            blockOff.getElement(bodySeg, i);
             if(foodPos.isPosEqual(&bodySeg))
             {
                 foodGeneratedFlag = false;
+                candidateX = 0;
+                candidateY = 0;
+                break;
             }     
         }
     }

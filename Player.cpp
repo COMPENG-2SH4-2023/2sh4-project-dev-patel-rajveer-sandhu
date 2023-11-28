@@ -149,7 +149,7 @@ void Player::movePlayer()
     playerPosList->insertHead(currendHeadpos);
     if(checkFoodConsumption(currendHeadpos))
     {
-        foodRef->generateFood(playerPosList);
+        foodRef->generateFood(*playerPosList);
         mainGameMechsRef->incrementScore(playerPosList->getSize());
     }
     else

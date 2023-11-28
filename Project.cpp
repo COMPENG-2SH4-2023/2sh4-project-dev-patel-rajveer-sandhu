@@ -68,7 +68,7 @@ void Initialize(void)
 
     //generateFood() requires player reference, you will
     //need to provide it AFTER player object is instantiated
-    foodObj->generateFood(player1Body);   
+    foodObj->generateFood(*player1Body);   
 
     
 }
