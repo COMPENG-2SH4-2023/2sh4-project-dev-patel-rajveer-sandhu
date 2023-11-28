@@ -49,21 +49,28 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    objPos tempPos(1,1,'o');
 
     //recommended default board size is 30 x 15
+    //we are using game board with size 26 by 13, for now at least
     gamemech = new GameMechs(26, 13);
-    player1 = new Player(gamemech);
 
     foodObj = new Food(gamemech);
+
     
+    
+    //this is a makeshift setup so I don't have to touch generateItem yet
+    //once you upgrade generateFood to accept reference to the arrayList, remove tempPos
+    //objPos tempPos(1,1,'o');
     //tempPos now holds player position
-    player1->getPlayerPos();
+    //player1->getPlayerPos();
+    player1 = new Player(gamemech, foodObj);
+    objPosArrayList* player1Body = player1->getPlayerPos();
 
     //generateFood() requires player reference, you will
     //need to provide it AFTER player object is instantiated
-    foodObj->generateFood(tempPos);   
+    foodObj->generateFood(player1Body);   
 
+    
 }
 
 void GetInput(void)
@@ -108,14 +115,14 @@ void DrawScreen(void)
     //iteration 2B
     objPos foodPos,BodySeg;
     bool body_drawn;
-    objPos tempPos(1,1,'o');
+  //  objPos tempPos(1,1,'o');
     
     objPosArrayList* player1Body = player1->getPlayerPos();
 
     //copy data members of playerPos into foodPos
-    foodPos.setObjPos(tempPos);
+    //foodPos.setObjPos(tempPos);
     //get position of food
-    foodObj->getFoodPos(tempPos);
+    foodObj->getFoodPos(foodPos);
 
     for(int i = 0; i < gamemech->getBoardSizeY(); i++)
     {
@@ -123,7 +130,7 @@ void DrawScreen(void)
         {
             body_drawn = false;
             for (int k = 0; k<player1Body->getSize();k++){
-                player1Body -> getElement(BodySeg,k);
+                player1Body -> getElement(BodySeg, k);
                 if (j == BodySeg.x && i == BodySeg.y){
                     body_drawn = true;
                     MacUILib_printf("%c",BodySeg.symbol);
@@ -150,11 +157,17 @@ void DrawScreen(void)
 
     
     //BELOW IS FOR DEBUGGING OF GAMEMECH DATA MEMBERS
-    MacUILib_printf("BoardSize: %dx%d", 
+    MacUILib_printf("BoardSize: %dx%d\n", 
                                 gamemech->getBoardSizeX(), 
                                 gamemech->getBoardSizeY());
 
-    MacUILib_printf("Food Position: <%d, %d> + %c\n",
+    for(int l = 0; l < player1Body->getSize(); l++)
+    {
+        player1Body->getElement(BodySeg, l);
+        MacUILib_printf("<%d, %d> ", BodySeg.x, BodySeg.y);
+    }
+
+    MacUILib_printf("\nFood Position: <%d, %d> + %c\n",
                                 foodPos.x, foodPos.y, foodPos.symbol);
 
 

@@ -92,13 +92,8 @@ int GameMechs::getScore()
     return score;
 }
 
-void GameMechs::incrementScore()
+void GameMechs::incrementScore(int playerSize)
 {
-    //if regular food increment by 1
-    //if special food incrmenet bigger (MAKE LATER)
-    if(true)
-    {
-        score++;
-    }
-   
+    //set score to list length of player - 1
+    score = playerSize - 1;   
 }

@@ -1,15 +1,17 @@
 #include "Player.h"
 
 
-Player::Player(GameMechs* thisGMRef)
+Player::Player(GameMechs* thisGMRef, Food* thisFoodRef)
 {
     mainGameMechsRef = thisGMRef;
+    foodRef = thisFoodRef;
+
     myDir = STOP;
     playerPosList = new objPosArrayList();
     objPos startPos;
     startPos.setObjPos(mainGameMechsRef->getBoardSizeX() / 2, mainGameMechsRef->getBoardSizeY() / 2,'*');
-    // playerPosList->insertHead(startPos);
-    // playerPosList->insertHead(startPos);
+    playerPosList->insertHead(startPos);
+    //  playerPosList->insertHead(startPos);
     // playerPosList->insertHead(startPos);
     // playerPosList->insertHead(startPos);
     // playerPosList->insertHead(startPos);
@@ -109,10 +111,11 @@ void Player::updatePlayerDir()
 
 void Player::movePlayer()
 {
+    //get position of player head
     objPos currendHeadpos;
     playerPosList->getHeadElement(currendHeadpos);
+
     // PPA3 Finite State Machine logic
-    //BLUD loves HARD Coding lmao
     int boardX = mainGameMechsRef->getBoardSizeX();
     int boardY = mainGameMechsRef->getBoardSizeY();
 
@@ -140,6 +143,30 @@ void Player::movePlayer()
             currendHeadpos.x = 1;
         }
     }
+
+    //check whether the head overlaps with food position
+    //might change where insertHead is placeed for bonus...
     playerPosList->insertHead(currendHeadpos);
-    playerPosList->removeTail();
+    if(checkFoodConsumption(currendHeadpos))
+    {
+        foodRef->generateFood(playerPosList);
+        mainGameMechsRef->incrementScore(playerPosList->getSize());
+    }
+    else
+    {
+        playerPosList->removeTail();
+    }
+}
+
+bool Player::checkFoodConsumption(objPos currendHeadpos)
+{
+    objPos foodPos;
+    foodRef->getFoodPos(foodPos);
+    return foodPos.isPosEqual(&currendHeadpos);
+}
+
+//might not be needed...
+void Player::increasePlayerLength()
+{
+
 }

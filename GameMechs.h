@@ -46,14 +46,11 @@ class GameMechs
         void clearInput();
 
         int getScore();
-        void incrementScore();
+        void incrementScore(int playerSize);
 
         int getBoardSizeX();
         int getBoardSizeY();
       
-
-      //ADD MORE METHODS WHEN NEEDED LIKE GENERATE FOOD AND 
-      //GENERATE FOOD POSITION
 
 };
 
