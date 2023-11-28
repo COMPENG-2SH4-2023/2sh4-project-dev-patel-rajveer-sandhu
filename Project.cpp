@@ -49,7 +49,7 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    objPos tempPos;
+    objPos tempPos(1,1,'o');
 
     //recommended default board size is 30 x 15
     gamemech = new GameMechs(26, 13);
@@ -58,7 +58,7 @@ void Initialize(void)
     foodObj = new Food(gamemech);
     
     //tempPos now holds player position
-    player1->getPlayerPos(tempPos);
+    player1->getPlayerPos();
 
     //generateFood() requires player reference, you will
     //need to provide it AFTER player object is instantiated
@@ -106,33 +106,43 @@ void DrawScreen(void)
     }
 
     //iteration 2B
-    objPos playerPos, foodPos;
-    player1->getPlayerPos(playerPos);
+    objPos foodPos,BodySeg;
+    bool body_drawn;
+    objPos tempPos(1,1,'o');
+    
+    objPosArrayList* player1Body = player1->getPlayerPos();
 
     //copy data members of playerPos into foodPos
-    foodPos.setObjPos(playerPos);
+    foodPos.setObjPos(tempPos);
     //get position of food
-    foodObj->getFoodPos(foodPos);
+    foodObj->getFoodPos(tempPos);
 
     for(int i = 0; i < gamemech->getBoardSizeY(); i++)
     {
         for(int j = 0; j < gamemech->getBoardSizeX(); j++)
         {
-            if(j == playerPos.x && i == playerPos.y)
-            {
-                MacUILib_printf("%c", playerPos.symbol);
+            body_drawn = false;
+            for (int k = 0; k<player1Body->getSize();k++){
+                player1Body -> getElement(BodySeg,k);
+                if (j == BodySeg.x && i == BodySeg.y){
+                    body_drawn = true;
+                    MacUILib_printf("%c",BodySeg.symbol);
+                    break;
+                }
             }
-            else if(j == foodPos.x && i == foodPos.y)
-            {
-                MacUILib_printf("%c", foodPos.symbol);
-            }
-            else if(i == 0 || i == gamemech->getBoardSizeY() - 1 || j == 0 || j == gamemech->getBoardSizeX() - 1)
-            {
-                MacUILib_printf("#");
-            }
-            else
-            {
-                MacUILib_printf(" ");
+            if (!body_drawn){
+                if(j == foodPos.x && i == foodPos.y)
+                {
+                    MacUILib_printf("%c", foodPos.symbol);
+                }
+                else if(i == 0 || i == gamemech->getBoardSizeY() - 1 || j == 0 || j == gamemech->getBoardSizeX() - 1)
+                {
+                    MacUILib_printf("#");
+                }
+                else
+                {
+                    MacUILib_printf(" ");
+                }
             }
         }
         MacUILib_printf("\n");
@@ -140,10 +150,9 @@ void DrawScreen(void)
 
     
     //BELOW IS FOR DEBUGGING OF GAMEMECH DATA MEMBERS
-    MacUILib_printf("BoardSize: %dx%d, Player Pos: <%d, %d> + %c\n", 
+    MacUILib_printf("BoardSize: %dx%d", 
                                 gamemech->getBoardSizeX(), 
-                                gamemech->getBoardSizeY(),
-                                playerPos.x, playerPos.y, playerPos.symbol);
+                                gamemech->getBoardSizeY());
 
     MacUILib_printf("Food Position: <%d, %d> + %c\n",
                                 foodPos.x, foodPos.y, foodPos.symbol);
