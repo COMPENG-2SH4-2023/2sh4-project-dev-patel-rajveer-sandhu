@@ -31,7 +31,7 @@ class Player
         // - check if new head position collides with food
         // - if yes, increment the score in GM, generate new food, and do NOT remove tail
         // otherwise, remove tail and move on
-        bool checkFoodConsumption(objPos currendHeadpos, char &symbol);
+        bool checkFoodConsumption(objPos currentHeadPos, char &symbol);
         void changePlayerLength(objPos currentHeadPos, char symbol);
         bool checkSelfCollision();
 

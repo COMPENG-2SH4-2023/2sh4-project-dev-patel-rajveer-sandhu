@@ -144,31 +144,31 @@ void Player::updateMovement(objPos &currentHeadPos)
 void Player::movePlayer()
 {
     //get position of player head
-    objPos currendHeadpos;
+    objPos currentHeadPos;
     objPos bodySeg;
 
     char symbol;
 
-    playerPosList->getHeadElement(currendHeadpos);
+    playerPosList->getHeadElement(currentHeadPos);
     for(int i = 1; i < playerPosList->getSize(); i++)
     {
         playerPosList->getElement(bodySeg, i);
-        if(currendHeadpos.isPosEqual(&bodySeg)){
+        if(currentHeadPos.isPosEqual(&bodySeg)){
             mainGameMechsRef->setLoseFlag();
             mainGameMechsRef->setExitTrue();
             return;
         }     
     }
 
-    updateMovement(currendHeadpos);
+    updateMovement(currentHeadPos);
 
     //check whether the head overlaps with food position
     //might change where insertHead is placeed for bonus...
-    playerPosList->insertHead(currendHeadpos);
-    if(checkFoodConsumption(currendHeadpos, symbol))
+    playerPosList->insertHead(currentHeadPos);
+    if(checkFoodConsumption(currentHeadPos, symbol))
     {
         //mainGameMechsRef->incrementScore(symbol);
-        changePlayerLength(currendHeadpos, symbol);
+        changePlayerLength(currentHeadPos, symbol);
         foodRef->generateFood(*playerPosList);
     }
     else
@@ -177,16 +177,16 @@ void Player::movePlayer()
     }
 }
 
-bool Player::checkFoodConsumption(objPos currendHeadpos, char &symbol)
+bool Player::checkFoodConsumption(objPos currentHeadPos, char &symbol)
 {
     objPos foodPos;
     objPosArrayList* foodPositions = foodRef->getFoodPos();
     for(int i = 0; i < foodPositions->getSize(); i++)
     {
         foodPositions->getElement(foodPos, i);
-        if(foodPos.isPosEqual(&currendHeadpos))
+        if(foodPos.isPosEqual(&currentHeadPos))
         {
-            symbol = foodPos.getSymbolIfPosEqual(&currendHeadpos);
+            symbol = foodPos.getSymbolIfPosEqual(&currentHeadPos);
             return true;
         }
     }
