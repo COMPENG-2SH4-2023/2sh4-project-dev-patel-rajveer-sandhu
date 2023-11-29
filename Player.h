@@ -30,6 +30,7 @@ class Player
         // otherwise, remove tail and move on
         bool checkFoodConsumption(objPos currendHeadpos);
         void increasePlayerLength();
+        bool checkSelfCollision();
 
         //Lastly, add self collision checks:
         // -if self-collided

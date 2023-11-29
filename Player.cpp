@@ -113,7 +113,18 @@ void Player::movePlayer()
 {
     //get position of player head
     objPos currendHeadpos;
+    objPos bodySeg;
     playerPosList->getHeadElement(currendHeadpos);
+    for(int i = 1; i < playerPosList->getSize(); i++)
+        {
+        playerPosList->getElement(bodySeg, i);
+        if(currendHeadpos.isPosEqual(&bodySeg)){
+            mainGameMechsRef->setLoseFlag();
+            mainGameMechsRef->setExitTrue();
+            return;
+            }     
+        }
+
 
     // PPA3 Finite State Machine logic
     int boardX = mainGameMechsRef->getBoardSizeX();
@@ -168,5 +179,10 @@ bool Player::checkFoodConsumption(objPos currendHeadpos)
 //might not be needed...
 void Player::increasePlayerLength()
 {
+
+}
+
+// might not be needed...
+bool checkSelfCollision(){
 
 }
