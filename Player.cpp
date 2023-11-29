@@ -11,18 +11,11 @@ Player::Player(GameMechs* thisGMRef, Food* thisFoodRef)
     objPos startPos;
     startPos.setObjPos(mainGameMechsRef->getBoardSizeX() / 2, mainGameMechsRef->getBoardSizeY() / 2,'*');
     playerPosList->insertHead(startPos);
-    //  playerPosList->insertHead(startPos);
-    // playerPosList->insertHead(startPos);
-    // playerPosList->insertHead(startPos);
-    // playerPosList->insertHead(startPos);
-
-    // more actions to be included
 }
 
 Player::~Player()
 {
     delete playerPosList;
-    // delete any heap members here
 }
 
 objPosArrayList* Player::getPlayerPos()
@@ -233,6 +226,22 @@ void Player::changePlayerLength(objPos currentHeadPos, char symbol)
 }
 
 // might not be needed...
-bool Player::checkSelfCollision(){
-
+char  Player::getPlayerDir(){
+    switch(myDir){
+            case LEFT:
+                return('L');
+                break;
+            case RIGHT:
+                return('R');
+                break;
+            case UP:
+                return('U');
+                break;
+            case DOWN:
+                return('D');
+                break;
+            default:
+                return('S');
+    }
 }
+    

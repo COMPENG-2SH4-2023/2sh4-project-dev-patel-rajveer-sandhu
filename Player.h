@@ -34,6 +34,7 @@ class Player
         bool checkFoodConsumption(objPos currentHeadPos, char &symbol);
         void changePlayerLength(objPos currentHeadPos, char symbol);
         bool checkSelfCollision();
+        char getPlayerDir();
 
         //Lastly, add self collision checks:
         // -if self-collided

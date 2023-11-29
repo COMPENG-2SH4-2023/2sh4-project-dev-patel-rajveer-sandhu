@@ -52,7 +52,7 @@ void Initialize(void)
 
     //recommended default board size is 30 x 15
     //we are using game board with size 26 by 13, for now at least
-    gamemech = new GameMechs(26, 13);
+    gamemech = new GameMechs(30, 15);
 
     foodObj = new Food(gamemech);
 
@@ -102,11 +102,11 @@ void DrawScreen(void)
     {
         if(gamemech->getLoseFlagStatus())
         {
-            MacUILib_printf("Lost innit\n");
+            MacUILib_printf("The snake ate itself! You Scored: %d.\n", gamemech->getScore());
         }
         else
         {
-            MacUILib_printf("GAME EXITED\n");
+            MacUILib_printf("Game Ended. You Scored: %d.\n", gamemech->getScore());
         }
         
         return;
@@ -170,24 +170,15 @@ void DrawScreen(void)
 
     
     //BELOW IS FOR DEBUGGING OF GAMEMECH DATA MEMBERS
-    MacUILib_printf("BoardSize: %dx%d\n", 
-                                gamemech->getBoardSizeX(), 
-                                gamemech->getBoardSizeY());
-
-    for(int l = 0; l < player1Body->getSize(); l++)
-    {
-        player1Body->getElement(BodySeg, l);
-        MacUILib_printf("<%d, %d> ", BodySeg.x, BodySeg.y);
-    }
+    player1Body->getHeadElement(BodySeg);
+    MacUILib_printf("Score: %d", gamemech->getScore());
+    MacUILib_printf("\n======== DEBUG MESSAGE ========");
+    MacUILib_printf("\nBoard Size: %dx%d", gamemech->getBoardSizeX(), gamemech->getBoardSizeY());
+    MacUILib_printf("\nPlayer Direction: %c", player1->getPlayerDir());
+    MacUILib_printf("\nPlayer Postion: %d, %d", BodySeg.x, BodySeg.y);
 
     // MacUILib_printf("\nFood Position: <%d, %d> + %c\n",
     //                             foodPos.x, foodPos.y, foodPos.symbol);
-
-
-    MacUILib_printf("\nScore: %d .... Lose Flag: %d\n", 
-                                gamemech->getScore(), 
-                                gamemech->getLoseFlagStatus());
-
 }
 
 void LoopDelay(void)
