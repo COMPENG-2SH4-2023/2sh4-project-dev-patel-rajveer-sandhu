@@ -3,8 +3,6 @@
 
 Food::Food(GameMechs* thisGMRef)
 {
-    foodPos.setObjPos(-1, -1, 'O');
-
     mainGameMechsRef = thisGMRef;
 
     objPos startPos;
@@ -32,9 +30,6 @@ objPosArrayList* Food::getFoodPos()
 
 void Food::generateFood(objPosArrayList &blockOff)
 {
-    //generate random x and y coordinate and make sure 
-    //not border position or player (blockOff) position 
-    //use objPos.isEqual() to check blockoff
     objPos bodySeg, foodObj[BUCKET_ITEMS];
     bool foodGeneratedFlag = false;
     char symbol = 'O';
@@ -42,11 +37,6 @@ void Food::generateFood(objPosArrayList &blockOff)
 
     xRange = mainGameMechsRef->getBoardSizeX() - 1;
     yRange = mainGameMechsRef->getBoardSizeY() - 1;
-
-
-    //continue coordinate generation if the food is on border or 
-    //same position as player object
-
 
     for(int items = 0; items < BUCKET_ITEMS; items++)
     {
@@ -108,8 +98,7 @@ void Food::generateFood(objPosArrayList &blockOff)
 
 }
 
-void Food::getFoodPos(objPos &returnPos)
+void Food::getFoodPos(objPosArrayList &returnPos)
 {
-    //set all private members of returnPos to be equal to foodPos
-    returnPos.setObjPos(foodPos);
+    returnPos = *foodBucket;
 }

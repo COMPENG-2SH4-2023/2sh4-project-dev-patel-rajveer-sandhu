@@ -17,7 +17,6 @@ Food *foodObj;
 
 
 void Initialize(void);
-void GetInput(void);
 void RunLogic(void);
 void DrawScreen(void);
 void LoopDelay(void);
@@ -32,8 +31,6 @@ int main(void)
 
     while(gamemech->getExitFlagStatus() == false)  
     {
-        //GET INPUT NOT NEEDED ANYMORE I THINK
-        //GetInput();
         RunLogic();
         DrawScreen();
         LoopDelay();
@@ -49,49 +46,22 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-
-    //recommended default board size is 30 x 15
-    //we are using game board with size 26 by 13, for now at least
+    //default board size is 30 x 15
+    //we are using game board with size 30 x 15 but using specialized constructor
     gamemech = new GameMechs(30, 15);
 
     foodObj = new Food(gamemech);
 
-    
-    
-    //this is a makeshift setup so I don't have to touch generateItem yet
-    //once you upgrade generateFood to accept reference to the arrayList, remove tempPos
-    //objPos tempPos(1,1,'o');
-    //tempPos now holds player position
-    //player1->getPlayerPos();
     player1 = new Player(gamemech, foodObj);
     objPosArrayList* player1Body = player1->getPlayerPos();
 
-    //generateFood() requires player reference, you will
-    //need to provide it AFTER player object is instantiated
     foodObj->generateFood(*player1Body);   
-
-    
-}
-
-void GetInput(void)
-{
-    //NO NEED FOR THIS AS UPDATE PLAYER DIRECTION CHECKS THIS
 }
 
 void RunLogic(void)
 {
     player1->updatePlayerDir();
     player1->movePlayer();
-    
-    /*
-    //debug for generateFood by inputting 'p'
-    if(gamemech->getInput() == 'p')
-    {
-        objPos tempPos;
-        player1->getPlayerPos(tempPos);
-        foodObj->generateFood(tempPos);
-    }
-    */
 }
 
 void DrawScreen(void)
@@ -112,35 +82,34 @@ void DrawScreen(void)
         return;
     }
 
-    //iteration 2B
     objPos foodPos,BodySeg;
     bool body_drawn, food_drawn;
-  //  objPos tempPos(1,1,'o');
-    
+
     objPosArrayList* player1Body = player1->getPlayerPos();
     objPosArrayList* foodPositions = foodObj->getFoodPos();
-
-    //copy data members of playerPos into foodPos
-    //foodPos.setObjPos(tempPos);
-    //get position of food
-    //foodObj->getFoodPos(foodPos);
 
     for(int i = 0; i < gamemech->getBoardSizeY(); i++)
     {
         for(int j = 0; j < gamemech->getBoardSizeX(); j++)
         {
             body_drawn = false;
-            for (int k = 0; k<player1Body->getSize();k++){
+
+            for (int k = 0; k<player1Body->getSize();k++)
+            {
                 player1Body -> getElement(BodySeg, k);
-                if (j == BodySeg.x && i == BodySeg.y){
+
+                if (j == BodySeg.x && i == BodySeg.y)
+                {
                     body_drawn = true;
                     MacUILib_printf("%c",BodySeg.symbol);
                     break;
                 }
             }
+
             if (!body_drawn)
             {
                 food_drawn = false;
+                
                 for(int k = 0; k < foodPositions->getSize(); k++)
                 {
                     foodPositions -> getElement(foodPos, k);
@@ -151,6 +120,7 @@ void DrawScreen(void)
                         break;
                     }
                 }
+
                 if(!food_drawn)
                 {
                     if(i == 0 || i == gamemech->getBoardSizeY() - 1 || j == 0 || j == gamemech->getBoardSizeX() - 1)
@@ -161,24 +131,20 @@ void DrawScreen(void)
                     {
                         MacUILib_printf(" ");
                     }
-                }
-                
+                }    
             }
         }
         MacUILib_printf("\n");
     }   
 
     
-    //BELOW IS FOR DEBUGGING OF GAMEMECH DATA MEMBERS
+    //Score and Debugging Messages
     player1Body->getHeadElement(BodySeg);
     MacUILib_printf("Score: %d", gamemech->getScore());
     MacUILib_printf("\n======== DEBUG MESSAGE ========");
     MacUILib_printf("\nBoard Size: %dx%d", gamemech->getBoardSizeX(), gamemech->getBoardSizeY());
     MacUILib_printf("\nPlayer Direction: %c", player1->getPlayerDir());
     MacUILib_printf("\nPlayer Postion: %d, %d", BodySeg.x, BodySeg.y);
-
-    // MacUILib_printf("\nFood Position: <%d, %d> + %c\n",
-    //                             foodPos.x, foodPos.y, foodPos.symbol);
 }
 
 void LoopDelay(void)
@@ -189,7 +155,6 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-  
     MacUILib_uninit();
 
     delete player1;

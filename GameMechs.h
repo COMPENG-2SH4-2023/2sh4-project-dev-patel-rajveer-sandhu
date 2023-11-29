@@ -11,12 +11,6 @@ using namespace std;
 
 class GameMechs
 {
-    // Construct the remaining declaration from the project manual.
-
-    // Only some sample members are included here
-
-    // You will include more data members and member functions to complete your design.
-
     private:
         char input;
         bool exitFlag;
@@ -27,13 +21,9 @@ class GameMechs
         int boardSizeX;
         int boardSizeY;
 
-        //will need an objPos object for the food position
-
     public:
         GameMechs();
         GameMechs(int boardX, int boardY);
-
-        ~GameMechs();
         
         bool getExitFlagStatus();
         void setExitTrue();

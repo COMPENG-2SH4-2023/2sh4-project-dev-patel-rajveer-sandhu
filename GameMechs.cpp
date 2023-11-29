@@ -25,13 +25,6 @@ GameMechs::GameMechs(int boardX, int boardY)
     boardSizeY = boardY;
 }
 
-// do you need a destructor?
-//FILL LATER
-GameMechs::~GameMechs()
-{
-
-}
-
 
 bool GameMechs::getExitFlagStatus()
 {
@@ -45,7 +38,6 @@ bool GameMechs::getLoseFlagStatus()
 
 char GameMechs::getInput()
 {
-    //FIGURE OUT WHERE TO USE THE SETTER
     char this_input = 0;
 
     if (MacUILib_hasChar()){
@@ -92,13 +84,9 @@ int GameMechs::getScore()
     return score;
 }
 
-// void GameMechs::incrementScore(int playerSize)
-// {
-//     //set score to list length of player - 1
-//     score = playerSize - 1;   
-// }
-
 void GameMechs::incrementScore(int amount)
 {
     score += amount;
+    if(score < 0)
+        score = 0;
 }

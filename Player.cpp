@@ -8,6 +8,7 @@ Player::Player(GameMechs* thisGMRef, Food* thisFoodRef)
 
     myDir = STOP;
     playerPosList = new objPosArrayList();
+
     objPos startPos;
     startPos.setObjPos(mainGameMechsRef->getBoardSizeX() / 2, mainGameMechsRef->getBoardSizeY() / 2,'*');
     playerPosList->insertHead(startPos);
@@ -34,7 +35,6 @@ void Player::updatePlayerDir()
         mainGameMechsRef->setExitTrue();
     }
 
-    // PPA3 input processing logic 
     else if (input != 0){
         //if input is capital letter, set to lowercase
         if(input >= 'A' && input <= 'Z')
@@ -104,7 +104,6 @@ void Player::updatePlayerDir()
 
 void Player::updateMovement(objPos &currentHeadPos)
 {
-    // PPA3 Finite State Machine logic
     int boardX = mainGameMechsRef->getBoardSizeX();
     int boardY = mainGameMechsRef->getBoardSizeY();
 
@@ -156,11 +155,9 @@ void Player::movePlayer()
     updateMovement(currentHeadPos);
 
     //check whether the head overlaps with food position
-    //might change where insertHead is placeed for bonus...
     playerPosList->insertHead(currentHeadPos);
     if(checkFoodConsumption(currentHeadPos, symbol))
     {
-        //mainGameMechsRef->incrementScore(symbol);
         changePlayerLength(currentHeadPos, symbol);
         foodRef->generateFood(*playerPosList);
     }
@@ -187,7 +184,6 @@ bool Player::checkFoodConsumption(objPos currentHeadPos, char &symbol)
     return false;
 }
 
-//might not be needed...
 void Player::changePlayerLength(objPos currentHeadPos, char symbol)
 {
     int chances;
@@ -197,36 +193,39 @@ void Player::changePlayerLength(objPos currentHeadPos, char symbol)
         switch(chances)
         {
             case 0:
-                //increase size by 3 (2 here and 1 in other loop), keep score the same
-                for(int i = 0; i < 2; i++)
+                //increase size by 4, keep score the same
+                for(int i = 0; i < 3; i++)
                 {
                     updateMovement(currentHeadPos);
                     playerPosList->insertHead(currentHeadPos);
                 }
                 break;
+
             case 1:
                 //increase score by 10, and keep size same
                 mainGameMechsRef->incrementScore(10);
                 playerPosList->removeTail();
                 break;
+
             case 2:
                 //decrease score by 5, keep same size
                 mainGameMechsRef->incrementScore(-5);
                 playerPosList->removeTail();
                 break;
+
             default:
                 mainGameMechsRef->incrementScore(1);
                 break;
         }
     }
+    //if player consumes any food object other than '?'
     else
     {
         mainGameMechsRef->incrementScore(1);
     }
 }
 
-// might not be needed...
-char  Player::getPlayerDir(){
+char Player::getPlayerDir(){
     switch(myDir){
             case LEFT:
                 return('L');
