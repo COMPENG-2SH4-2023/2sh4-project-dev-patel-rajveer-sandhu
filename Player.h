@@ -1,6 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <cstdlib>
+
 #include "GameMechs.h"
 #include "objPos.h"
 #include "objPosArrayList.h"
@@ -23,13 +25,14 @@ class Player
         objPosArrayList* getPlayerPos(); // Upgrade this in iteration 3.
         void updatePlayerDir();
         void movePlayer();
+        void updateMovement(objPos &currentHeadPos);
         //Need more actions in here:
         //after inserting the head but before removing the tail
         // - check if new head position collides with food
         // - if yes, increment the score in GM, generate new food, and do NOT remove tail
         // otherwise, remove tail and move on
-        bool checkFoodConsumption(objPos currendHeadpos);
-        void increasePlayerLength();
+        bool checkFoodConsumption(objPos currendHeadpos, char &symbol);
+        void changePlayerLength(objPos currentHeadPos, char symbol);
         bool checkSelfCollision();
 
         //Lastly, add self collision checks:

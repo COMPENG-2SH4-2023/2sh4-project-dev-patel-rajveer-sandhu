@@ -92,8 +92,13 @@ int GameMechs::getScore()
     return score;
 }
 
-void GameMechs::incrementScore(int playerSize)
+// void GameMechs::incrementScore(int playerSize)
+// {
+//     //set score to list length of player - 1
+//     score = playerSize - 1;   
+// }
+
+void GameMechs::incrementScore(int amount)
 {
-    //set score to list length of player - 1
-    score = playerSize - 1;   
+    score += amount;
 }

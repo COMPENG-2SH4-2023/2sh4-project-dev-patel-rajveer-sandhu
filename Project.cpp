@@ -114,15 +114,16 @@ void DrawScreen(void)
 
     //iteration 2B
     objPos foodPos,BodySeg;
-    bool body_drawn;
+    bool body_drawn, food_drawn;
   //  objPos tempPos(1,1,'o');
     
     objPosArrayList* player1Body = player1->getPlayerPos();
+    objPosArrayList* foodPositions = foodObj->getFoodPos();
 
     //copy data members of playerPos into foodPos
     //foodPos.setObjPos(tempPos);
     //get position of food
-    foodObj->getFoodPos(foodPos);
+    //foodObj->getFoodPos(foodPos);
 
     for(int i = 0; i < gamemech->getBoardSizeY(); i++)
     {
@@ -137,19 +138,31 @@ void DrawScreen(void)
                     break;
                 }
             }
-            if (!body_drawn){
-                if(j == foodPos.x && i == foodPos.y)
+            if (!body_drawn)
+            {
+                food_drawn = false;
+                for(int k = 0; k < foodPositions->getSize(); k++)
                 {
-                    MacUILib_printf("%c", foodPos.symbol);
+                    foodPositions -> getElement(foodPos, k);
+                    if (j == foodPos.x && i == foodPos.y)
+                    {
+                        food_drawn = true;
+                        MacUILib_printf("%c",foodPos.symbol);
+                        break;
+                    }
                 }
-                else if(i == 0 || i == gamemech->getBoardSizeY() - 1 || j == 0 || j == gamemech->getBoardSizeX() - 1)
+                if(!food_drawn)
                 {
-                    MacUILib_printf("#");
+                    if(i == 0 || i == gamemech->getBoardSizeY() - 1 || j == 0 || j == gamemech->getBoardSizeX() - 1)
+                    {
+                        MacUILib_printf("#");
+                    }
+                    else
+                    {
+                        MacUILib_printf(" ");
+                    }
                 }
-                else
-                {
-                    MacUILib_printf(" ");
-                }
+                
             }
         }
         MacUILib_printf("\n");
@@ -167,11 +180,11 @@ void DrawScreen(void)
         MacUILib_printf("<%d, %d> ", BodySeg.x, BodySeg.y);
     }
 
-    MacUILib_printf("\nFood Position: <%d, %d> + %c\n",
-                                foodPos.x, foodPos.y, foodPos.symbol);
+    // MacUILib_printf("\nFood Position: <%d, %d> + %c\n",
+    //                             foodPos.x, foodPos.y, foodPos.symbol);
 
 
-    MacUILib_printf("Score: %d .... Lose Flag: %d\n", 
+    MacUILib_printf("\nScore: %d .... Lose Flag: %d\n", 
                                 gamemech->getScore(), 
                                 gamemech->getLoseFlagStatus());
 

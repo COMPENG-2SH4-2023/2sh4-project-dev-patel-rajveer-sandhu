@@ -107,61 +107,69 @@ void Player::updatePlayerDir()
     input = 0;
     //clear the most recent input (input = NULL)
     mainGameMechsRef->clearInput();
-}     
+}
+
+void Player::updateMovement(objPos &currentHeadPos)
+{
+    // PPA3 Finite State Machine logic
+    int boardX = mainGameMechsRef->getBoardSizeX();
+    int boardY = mainGameMechsRef->getBoardSizeY();
+
+    if (myDir == UP){
+        currentHeadPos.y--;
+        if (currentHeadPos.y <= 0){
+            currentHeadPos.y = boardY - 2;
+        }
+    }
+    else if (myDir == DOWN){
+        currentHeadPos.y++;
+        if (currentHeadPos.y >= boardY - 1){
+            currentHeadPos.y = 1;
+        }
+    }
+    else if (myDir == LEFT){
+        currentHeadPos.x--;
+        if (currentHeadPos.x <= 0){
+            currentHeadPos.x = boardX - 2;
+        }
+    }
+    else if (myDir == RIGHT){
+        currentHeadPos.x++;
+        if (currentHeadPos.x >= boardX - 1){
+            currentHeadPos.x = 1;
+        }
+    }
+}
 
 void Player::movePlayer()
 {
     //get position of player head
     objPos currendHeadpos;
     objPos bodySeg;
+
+    char symbol;
+
     playerPosList->getHeadElement(currendHeadpos);
     for(int i = 1; i < playerPosList->getSize(); i++)
-        {
+    {
         playerPosList->getElement(bodySeg, i);
         if(currendHeadpos.isPosEqual(&bodySeg)){
             mainGameMechsRef->setLoseFlag();
             mainGameMechsRef->setExitTrue();
             return;
-            }     
-        }
+        }     
+    }
 
-
-    // PPA3 Finite State Machine logic
-    int boardX = mainGameMechsRef->getBoardSizeX();
-    int boardY = mainGameMechsRef->getBoardSizeY();
-
-    if (myDir == UP){
-        currendHeadpos.y--;
-        if (currendHeadpos.y <= 0){
-            currendHeadpos.y = boardY - 2;
-        }
-    }
-    else if (myDir == DOWN){
-        currendHeadpos.y++;
-        if (currendHeadpos.y >= boardY - 1){
-            currendHeadpos.y = 1;
-        }
-    }
-    else if (myDir == LEFT){
-        currendHeadpos.x--;
-        if (currendHeadpos.x <= 0){
-            currendHeadpos.x = boardX - 2;
-        }
-    }
-    else if (myDir == RIGHT){
-        currendHeadpos.x++;
-        if (currendHeadpos.x >= boardX - 1){
-            currendHeadpos.x = 1;
-        }
-    }
+    updateMovement(currendHeadpos);
 
     //check whether the head overlaps with food position
     //might change where insertHead is placeed for bonus...
     playerPosList->insertHead(currendHeadpos);
-    if(checkFoodConsumption(currendHeadpos))
+    if(checkFoodConsumption(currendHeadpos, symbol))
     {
+        //mainGameMechsRef->incrementScore(symbol);
+        changePlayerLength(currendHeadpos, symbol);
         foodRef->generateFood(*playerPosList);
-        mainGameMechsRef->incrementScore(playerPosList->getSize());
     }
     else
     {
@@ -169,20 +177,62 @@ void Player::movePlayer()
     }
 }
 
-bool Player::checkFoodConsumption(objPos currendHeadpos)
+bool Player::checkFoodConsumption(objPos currendHeadpos, char &symbol)
 {
     objPos foodPos;
-    foodRef->getFoodPos(foodPos);
-    return foodPos.isPosEqual(&currendHeadpos);
+    objPosArrayList* foodPositions = foodRef->getFoodPos();
+    for(int i = 0; i < foodPositions->getSize(); i++)
+    {
+        foodPositions->getElement(foodPos, i);
+        if(foodPos.isPosEqual(&currendHeadpos))
+        {
+            symbol = foodPos.getSymbolIfPosEqual(&currendHeadpos);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //might not be needed...
-void Player::increasePlayerLength()
+void Player::changePlayerLength(objPos currentHeadPos, char symbol)
 {
-
+    int chances;
+    if(symbol == '?')
+    {
+        chances = rand() % 3;
+        switch(chances)
+        {
+            case 0:
+                //increase size by 3 (2 here and 1 in other loop), keep score the same
+                for(int i = 0; i < 2; i++)
+                {
+                    updateMovement(currentHeadPos);
+                    playerPosList->insertHead(currentHeadPos);
+                }
+                break;
+            case 1:
+                //increase score by 10, and keep size same
+                mainGameMechsRef->incrementScore(10);
+                playerPosList->removeTail();
+                break;
+            case 2:
+                //decrease score by 5, keep same size
+                mainGameMechsRef->incrementScore(-5);
+                playerPosList->removeTail();
+                break;
+            default:
+                mainGameMechsRef->incrementScore(1);
+                break;
+        }
+    }
+    else
+    {
+        mainGameMechsRef->incrementScore(1);
+    }
 }
 
 // might not be needed...
-bool checkSelfCollision(){
+bool Player::checkSelfCollision(){
 
 }
