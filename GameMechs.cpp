@@ -5,8 +5,8 @@ GameMechs::GameMechs()
 {
     input = 0;
     score = 0;
-    exitFlag = false;
 
+    exitFlag = false;
     loseFlag = false;
 
     boardSizeX = 30;
@@ -17,8 +17,8 @@ GameMechs::GameMechs(int boardX, int boardY)
 {
     input = 0;
     score = 0;
-    exitFlag = false;
 
+    exitFlag = false;
     loseFlag = false;
 
     boardSizeX = boardX;
@@ -40,10 +40,12 @@ char GameMechs::getInput()
 {
     char this_input = 0;
 
+    //if user input occurs, retrieve the character input
     if (MacUILib_hasChar()){
         this_input = MacUILib_getChar();
     }
 
+    //set input data member to value retrieved from user
     setInput(this_input);
     return input;
 }
@@ -86,6 +88,7 @@ int GameMechs::getScore()
 
 void GameMechs::incrementScore(int amount)
 {
+    //increment score by value of amount
     score += amount;
     if(score < 0)
         score = 0;

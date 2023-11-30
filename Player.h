@@ -26,13 +26,12 @@ class Player
         char getPlayerDir();
 
     private:
-        objPosArrayList *playerPosList;    
+        objPosArrayList *playerPosList;
+            
         enum Dir myDir;
 
-        // Need a reference to the Main Game Mechanisms
         GameMechs* mainGameMechsRef;
 
-        //need reference to food object
         Food *foodRef;
 };
 

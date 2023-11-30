@@ -3,12 +3,14 @@
 
 Player::Player(GameMechs* thisGMRef, Food* thisFoodRef)
 {
+    //assign global object pointers from project.cpp to local object pointers 
     mainGameMechsRef = thisGMRef;
     foodRef = thisFoodRef;
 
     myDir = STOP;
     playerPosList = new objPosArrayList();
 
+    //add 1 player object into gameboard
     objPos startPos;
     startPos.setObjPos(mainGameMechsRef->getBoardSizeX() / 2, mainGameMechsRef->getBoardSizeY() / 2,'*');
     playerPosList->insertHead(startPos);
@@ -16,6 +18,7 @@ Player::Player(GameMechs* thisGMRef, Food* thisFoodRef)
 
 Player::~Player()
 {
+    //deallocate player object arrayList
     delete playerPosList;
 }
 
@@ -30,73 +33,48 @@ void Player::updatePlayerDir()
     char input;
     input = mainGameMechsRef->getInput();
 
-    if(input == ' ')
-    {
-        mainGameMechsRef->setExitTrue();
-    }
-
-    else if (input != 0){
+    if (input != 0){
         //if input is capital letter, set to lowercase
         if(input >= 'A' && input <= 'Z')
         {
             input += 32;
         }
 
-        switch(myDir){
-            case STOP:
-                if (input == 'w'){
-                    myDir = UP;
-                }
-                else if (input == 'a'){
-                    myDir = LEFT;
-                }
-                else if (input == 's'){
-                    myDir = DOWN;
-                }
-                else if (input == 'd'){
-                    myDir = RIGHT;
-                }
+        switch(input)
+        {
+            //if input is space bar, set exit flag to true
+            case ' ':
+                mainGameMechsRef->setExitTrue();
                 break;
-            case LEFT:
-                if (input == 'w'){
+            
+            //If input 'w' and myDir is NOT DOWN, player goes up
+            case 'w':
+                if(myDir != DOWN)
                     myDir = UP;
-                }
-                else if (input == 's'){
-                    myDir = DOWN;
-                }
                 break;
 
-            case RIGHT:
-                if (input == 'w'){
-                    myDir = UP;
-                }
-                else if (input == 's'){
-                    myDir = DOWN;
-                }
+            //if input 'a' and myDir is NOT RIGHT, player goes left
+            case 'a':
+                if(myDir != RIGHT)
+                    myDir = LEFT;
                 break;
 
-            case UP:
-                if (input == 'a'){
-                    myDir = LEFT;
-                }
-                else if (input == 'd'){
-                    myDir = RIGHT;
-                }
-                break;  
+            //if input 's' and myDir is NOT UP, player goes down
+            case 's':
+                if(myDir != UP)
+                    myDir = DOWN;
+                break;
 
-            case DOWN:
-                if (input == 'a'){
-                    myDir = LEFT;
-                }
-                else if (input == 'd'){
+            //If input 'd' and myDir is NOT LEFT, player goes right
+            case 'd':
+                if(myDir != LEFT)
                     myDir = RIGHT;
-                }
                 break;
 
             default:
                 break;
-            }
         }
+    }
     input = 0;
     //clear the most recent input (input = NULL)
     mainGameMechsRef->clearInput();
@@ -106,6 +84,9 @@ void Player::updateMovement(objPos &currentHeadPos)
 {
     int boardX = mainGameMechsRef->getBoardSizeX();
     int boardY = mainGameMechsRef->getBoardSizeY();
+
+    //change position based on current associated direction value of myDir 
+    //implement border wrap around in each position changing case
 
     if (myDir == UP){
         currentHeadPos.y--;
@@ -142,6 +123,8 @@ void Player::movePlayer()
     char symbol;
 
     playerPosList->getHeadElement(currentHeadPos);
+
+    //check for player head overlap with other body positions (snake suicide)
     for(int i = 1; i < playerPosList->getSize(); i++)
     {
         playerPosList->getElement(bodySeg, i);
@@ -154,10 +137,12 @@ void Player::movePlayer()
 
     updateMovement(currentHeadPos);
 
-    //check whether the head overlaps with food position
     playerPosList->insertHead(currentHeadPos);
+
+    //check whether the head overlaps with food position
     if(checkFoodConsumption(currentHeadPos, symbol))
     {
+        //if head overlaps food object, change player length and generate new food positions
         changePlayerLength(currentHeadPos, symbol);
         foodRef->generateFood(*playerPosList);
     }
@@ -171,6 +156,8 @@ bool Player::checkFoodConsumption(objPos currentHeadPos, char &symbol)
 {
     objPos foodPos;
     objPosArrayList* foodPositions = foodRef->getFoodPos();
+
+    //check for head overlap with each object in the player arrayList
     for(int i = 0; i < foodPositions->getSize(); i++)
     {
         foodPositions->getElement(foodPos, i);
@@ -187,13 +174,15 @@ bool Player::checkFoodConsumption(objPos currentHeadPos, char &symbol)
 void Player::changePlayerLength(objPos currentHeadPos, char symbol)
 {
     int chances;
+
+    //if head overlapped with symbol '?'
     if(symbol == '?')
     {
         chances = rand() % 3;
         switch(chances)
         {
             case 0:
-                //increase size by 4, keep score the same
+                //increase size by 4 (3 here, 1 in movePlayer() method), keep score the same
                 for(int i = 0; i < 3; i++)
                 {
                     updateMovement(currentHeadPos);
@@ -225,6 +214,7 @@ void Player::changePlayerLength(objPos currentHeadPos, char symbol)
     }
 }
 
+//return character of player's current direction
 char Player::getPlayerDir(){
     switch(myDir){
             case LEFT:
@@ -243,4 +233,3 @@ char Player::getPlayerDir(){
                 return('S');
     }
 }
-    

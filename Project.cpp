@@ -10,6 +10,7 @@ using namespace std;
 
 #define DELAY_CONST 100000
 
+//declare global object pointers to reference necessary classes
 GameMechs *gamemech;
 Player *player1;
 Food *foodObj;
@@ -29,6 +30,7 @@ int main(void)
 
     Initialize();
 
+    //continue game loop while exit flag is false
     while(gamemech->getExitFlagStatus() == false)  
     {
         RunLogic();
@@ -55,6 +57,7 @@ void Initialize(void)
     player1 = new Player(gamemech, foodObj);
     objPosArrayList* player1Body = player1->getPlayerPos();
 
+    //generate food items while avoiding player's arrayList body
     foodObj->generateFood(*player1Body);   
 }
 
@@ -68,8 +71,10 @@ void DrawScreen(void)
 {
     MacUILib_clearScreen();
 
+    //if game exit flag true
     if(gamemech->getExitFlagStatus())
     {
+        //if lose flag also true
         if(gamemech->getLoseFlagStatus())
         {
             MacUILib_printf("The snake ate itself! You Scored: %d.\n", gamemech->getScore());
@@ -94,6 +99,7 @@ void DrawScreen(void)
         {
             body_drawn = false;
 
+            //first check for player body positions
             for (int k = 0; k<player1Body->getSize();k++)
             {
                 player1Body -> getElement(BodySeg, k);
@@ -110,6 +116,7 @@ void DrawScreen(void)
             {
                 food_drawn = false;
                 
+                //check for positions of food objects
                 for(int k = 0; k < foodPositions->getSize(); k++)
                 {
                     foodPositions -> getElement(foodPos, k);
@@ -121,6 +128,7 @@ void DrawScreen(void)
                     }
                 }
 
+                //if no food object or player object at position, print gameboard value
                 if(!food_drawn)
                 {
                     if(i == 0 || i == gamemech->getBoardSizeY() - 1 || j == 0 || j == gamemech->getBoardSizeX() - 1)
@@ -157,6 +165,7 @@ void CleanUp(void)
 {
     MacUILib_uninit();
 
+    //free object pointers
     delete player1;
     delete foodObj;
     delete gamemech;

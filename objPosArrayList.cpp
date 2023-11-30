@@ -2,6 +2,7 @@
 
 objPosArrayList::objPosArrayList()
 {
+    //initialize array of objPos with ARRAY_MAX_CAP capacity
     aList = new objPos[ARRAY_MAX_CAP];
     sizeArray = ARRAY_MAX_CAP;
     sizeList = 0;
@@ -33,6 +34,7 @@ void objPosArrayList::insertHead(objPos thisPos)
 
 void objPosArrayList::insertTail(objPos thisPos)
 {
+    //append objPos object to end of arrayList
     aList[sizeList].setObjPos(thisPos);
     sizeList++;
 }
@@ -41,6 +43,8 @@ void objPosArrayList::removeHead()
 {
     objPos null_pos;
     aList[0].setObjPos(null_pos);
+
+    //shuffle towards head
     for (int i = 0; i<sizeList;i++){
         aList[i].setObjPos(aList[i+1]);
     }
@@ -52,7 +56,6 @@ void objPosArrayList::removeTail()
     objPos null_pos;
     aList[sizeList].setObjPos(null_pos);
     sizeList--;
-
 }
 
 void objPosArrayList::getHeadElement(objPos &returnPos)
@@ -67,5 +70,6 @@ void objPosArrayList::getTailElement(objPos &returnPos)
 
 void objPosArrayList::getElement(objPos &returnPos, int index)
 {
+    //return object of arrayList from specified index
     returnPos.setObjPos(aList[index]);
 }

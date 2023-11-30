@@ -5,6 +5,7 @@ Food::Food(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
 
+    //insert 5 food objects into the game board
     objPos startPos;
     foodBucket = new objPosArrayList();
     for(int i = 0; i < BUCKET_ITEMS; i++)
@@ -38,15 +39,18 @@ void Food::generateFood(objPosArrayList &blockOff)
     xRange = mainGameMechsRef->getBoardSizeX() - 1;
     yRange = mainGameMechsRef->getBoardSizeY() - 1;
 
+    //generate new positions for all food objects
     for(int items = 0; items < BUCKET_ITEMS; items++)
     {
         candidateX = 0;
         candidateY = 0;
         foodGeneratedFlag = false;
 
+        //last generated food object is assigned '?' symbol
         if(items == BUCKET_ITEMS - 1)
             symbol = '?';
 
+        //continue generating new food object data members until it passes all conditions to replace old object
         while(!foodGeneratedFlag)
         {
         
@@ -64,6 +68,7 @@ void Food::generateFood(objPosArrayList &blockOff)
 
             foodObj[items].setObjPos(candidateX, candidateY, symbol);
             
+            //check that new generated food does not match another food object
             for(int k = 0; k < items; k++)
             {
                 foodBucket->getElement(foodObj[k], k);
@@ -76,6 +81,7 @@ void Food::generateFood(objPosArrayList &blockOff)
                 }
             }
 
+            //check that generated food object does not overlap with player arrayList
             if(foodGeneratedFlag)
             {
                 for(int i = 0; i < blockOff.getSize(); i++)
@@ -91,14 +97,14 @@ void Food::generateFood(objPosArrayList &blockOff)
             }
             
         }
+        //remove old food objects and add in newly generated food objects
         foodBucket->removeTail();
         foodBucket->insertHead(foodObj[items]);
-
     }
-
 }
 
 void Food::getFoodPos(objPosArrayList &returnPos)
 {
+    //returnPos receives food arrayList, foodBucket
     returnPos = *foodBucket;
 }
