@@ -21,12 +21,13 @@ Food::Food(GameMechs* thisGMRef)
 Food::~Food()
 {
     delete foodBucket;
+    // Destructor that deletes the foodBucket Array list from the heap
 }
 
 objPosArrayList* Food::getFoodPos()
 {
     return foodBucket;
-    // return the reference to the playerPos arrray list
+    // return the reference to the playerPos array list
 }
 
 void Food::generateFood(objPosArrayList &blockOff)
